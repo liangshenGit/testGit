@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
+	layout:decorator="layouts/WithSubscribeWebSite"	>
+<head>
+</head>
+<body>
+
+<th:block layout:fragment="secondHead">
+   <meta name="keywords" content="定期理财产品安盈计划,定期存款理财,定期理财产品排行" />
+    <meta name="description" content="团贷网定期理财产品安盈计划是由大连京北互联网金融资产交易中心（简称连交所）备案,推介至团贷网向投资人定向募集的金融资产收益权产品." />
+    <link rel="stylesheet" href="//js.tuandai.com/styles/RegularFinancial/list.css?v=20161018001" />
+	<link rel="stylesheet" type="text/css" href="//js.tuandai.com/styles/RegularFinancial/weplan/weAYB_List.css?v=20161114001" />
+</th:block>
+
+<th:block layout:fragment="secondBody">
+	<div class="container auto">
+		<!--banner-->
+		<div class="invest-tag  cl fix  mr10 ">
+		<!-- 投标页签 -->
+			<ul class="cl fix mb10">
+				<li  class="inv-tag-1 on">安盈计划</li>
+				<li  class="inv-tag-2"><a href="/pages/RegularFinancial/dqlclist.aspx">安盈宝</a></li>
+				<li  class="inv-tag-2"><a href="/pages/invest/dqzqzr_list.aspx">定期转让</a></li>
+			</ul> 
+		</div> 
+
+		<!-- 1218预售计划 -->
+	    <div class="invent_list mb10" th:if="${webSetting ne null and #TdTool.stringToDate(webSetting?.param1Value) lt #dates.createNow() and #dates.createNow() le #TdTool.stringToDate(webSetting?.param2Value)}">
+		    <ul class="fix cl">
+			    <li th:each="model:${preWeList}">
+				    <div class="animate-up animate" th:onclick="'$(\'#'+${model?.ProductId}+'\').click(); return false;'">
+					    <p class="title" th:inline="text">
+						    <a th:href="@{'/pages/weplan/WeAYB_Detail.aspx'(id=${model.ProductId})}" class="f18" th:inline="text">安盈计划[[${model.TypeWord}]]</a>
+                               <span class="tip-red rel z1" th:inline="text">[[${webSetting?.param3Value?:''}]]
+                   					<span class="tip-red-2 abs">
+										<span class="tip-red-1" th:utext="${#strings.replace(webSetting?.Param4Value,'{acturl}',webSetting?.Param5Value)}"></span>
+                   					</span>
+                   				</span>
+                   				<th:block>
+	                            	<!-- 1218当天 -->
+	                            	<th:block th:if="${curSellSetting ne null and #TdTool.stringToDate(curSellSetting?.Param1Value) le #dates.createNow() and #TdTool.stringToDate(curSellSetting?.Param2Value) gt #dates.createNow()}">
+			                            <span class="tip-red" th:text="${curSellSetting?.Param3Value}">1218</span>
+	                            	</th:block>
+	                            	<th:block th:unless="${curSellSetting ne null and #TdTool.stringToDate(curSellSetting?.Param1Value) le #dates.createNow() and #TdTool.stringToDate(curSellSetting?.Param2Value) gt #dates.createNow()}">
+			                            <span class="tip-red" th:if="${model?.TuandaiRedRate?:0 ge 0}" th:text="'加息奖励'+${#TdTool.deleteZero(model?.TuandaiRedRate)}+'%'">加息奖励1%</span>
+	                            	</th:block>
+	                            </th:block>
+	                            <span class="yellow-tip">可使用红包</span>
+					    </p>
+					    <div class="invent-data">
+						    <div class="per-box i-b-d">
+							    <div class="mb10">  
+                                      <span class="f40 g-orange2 fa" th:text="${#TdTool.deleteZero(model?.YearRate?:0)}">1</span>
+                                      	<th:block>
+		                                   	<!-- 1218当天 -->
+		                                   	<th:block th:if="${curSellSetting ne null and #TdTool.stringToDate(curSellSetting?.Param1Value) lt #dates.createNow() and #TdTool.stringToDate(curSellSetting?.Param2Value) ge #dates.createNow()}">
+		                                   		<span class="rel g-orange2 f22" >+X</span>
+		                                   	</th:block>
+		                                   	<th:block th:unless="${curSellSetting ne null and #TdTool.stringToDate(curSellSetting?.Param1Value) lt #dates.createNow() and #TdTool.stringToDate(curSellSetting?.Param2Value) ge #dates.createNow()}">
+		                                   		<span class="rel g-orange2 f18" th:if="${model?.TuandaiRedRate?:0 ge 0}" th:text="'+'+${#TdTool.deleteZero(model.TuandaiRedRate)}">+1</span>
+		                                   	</th:block>
+		                                </th:block>
+                                      	<span class="rel g-orange2 f22" th:if="${model.IsPreSell and model.PreSellInvestDate ne null and model.PreSellInvestDate ge #dates.createNow()}">+X</span>
+                                      	<span class="g-orange2 rel f14">%</span>
+                                       <span class="g9 f12">预期年化利率 </span></div>
+							    <span class="g9 ml5 f12" th:inline="text">单位：[[${#TdTool.deleteZero(model.UnitAmount)}]]元</span>
+						    </div>
+						    <div class="date i-b-d ">
+							    <div class="mb10  mb15"><span class=" f26 g6 rel t2" th:text="${model?.Deadline}">12</span> <span class="g9 f12">个月 </span><span class="g9 f12" th:inline="text">/[[${model?.Deadline gt 6?'每月付息':'每月付息/到期本息'}]]</span></div>
+							    <span class="g9 db f12" th:inline="text">剩余份数：[[${model.TotalQty - model.OrderQty}]]份</span></div>
+						    <div class="submit i-b-d">
+                                  <a th:if="${model.Status eq 1}" th:href="@{'/pages/weplan/WeAYB_Detail.aspx'(id=${model.ProductId})}" target="_blank" class="join td-btn-1   td-btn-1-or jiek_action" th:attr="attrid=${model?.ProductId},protitle=${model?.ProductName}" style="font-size: 12px!important;">
+                                      <span class="timeSet" style="font-size: 12px; color: #fff;" th:attr="count=${model?.diffNow ge 0?model?.diffNow :'0%'}">00时00分00秒</span>
+                                  </a>
+                                  <a th:if="${model.Status eq 2}" class="join td-btn-1   td-btn-1-or jiek_action" id="btnSubscribe" th:href="@{'/pages/weplan/WeAYB_Detail.aspx'(id=${model.ProductId})}" target="_blank">马上加入</a>
+                                  <a th:if="${model.Status eq 3}" class="join td-btn-1   td-btn-1-gar jiek_action" id="btnSubscribe" th:href="@{'/pages/weplan/WeAYB_Detail.aspx'(id=${model.ProductId})}" target="_blank">已结束</a>
+                                  <a th:if="${model.Status eq 0}" class="join td-btn-1   td-btn-1-gar jiek_action" id="btnSubscribe" th:href="@{'/pages/weplan/WeAYB_Detail.aspx'(id=${model.ProductId})}" target="_blank">已满额</a>
+						    </div>
+					    </div>
+				    </div>
+                       <a th:href="@{'/pages/weplan/WeAYB_Detail.aspx'(id=${model.ProductId})}" target="_blank" style="display: none"><span th:id="${model.ProductId}"></span></a>
+			    </li> 
+		    </ul>
+	    </div>
+		
+		<!--We计划列表-->
+		<div class="invent_list">
+			<ul class="fix cl">
+				<th:block th:each="model:${weList}">
+					<li>
+						<div class="animate-up animate">
+							<p class="title">
+								<a th:href="@{'/pages/weplan/WeAYB_Detail.aspx'(id=${model?.ProductId})}" class="f18" th:text="'安盈计划'+${model.TypeWord}"></a>
+	                            <th:block>
+	                            	<!-- 1218当天 -->
+	                            	<th:block th:if="${curSellSetting ne null and #TdTool.stringToDate(curSellSetting?.Param1Value) lt #dates.createNow() and #TdTool.stringToDate(curSellSetting?.Param2Value) ge #dates.createNow()}">
+			                            <span class="tip-red" th:text="${curSellSetting?.Param3Value}">1218</span>
+	                            	</th:block>
+	                            	<th:block th:unless="${curSellSetting ne null and #TdTool.stringToDate(curSellSetting?.Param1Value) lt #dates.createNow() and #TdTool.stringToDate(curSellSetting?.Param2Value) ge #dates.createNow()}">
+			                            <span class="tip-red" th:if="${model?.TuandaiRedRate?:0 ge 0}" th:text="'加息奖励'+${#TdTool.deleteZero(model?.TuandaiRedRate)}+'%'">加息奖励1%</span>
+	                            	</th:block>
+	                            </th:block>
+	                            <!-- 返现 -->
+	                            <th:block th:if="${model?.TuandaiCashRate gt 0}">
+	                            	<span class="tip-red" th:if="${model?.CashLimitAmount gt 0}" th:text="${#strings.replace(#strings.replace(cashSetting?.Param1Value?:'起投{Amount}元，返现{Rate}%','{Rate}',#TdTool.deleteZero(model?.TuandaiCashRate)),'{Amount}',model?.CashLimitAmount ge 10000?#TdTool.deleteZero(model?.CashLimitAmount/10000.0)+'万':#TdTool.deleteZero(model?.CashLimitAmount/1000.0)+'千')}">返现</span>
+	                            	<span class="tip-red" th:if="${model?.CashLimitAmount le 0}" th:text="${#strings.replace(cashSetting?.Param2Value?:'返现{Rate}%','{Rate}',#TdTool.deleteZero(model?.TuandaiCashRate)) }">返现</span>
+	                            </th:block>
+	                            <span class="yellow-tip">可使用红包</span>
+							</p>
+							<div class="invent-data">
+								<div class="per-box i-b-d">
+									<div class="mb10">  
+	                                   <span class="f40 g-orange2 fa" th:text="${#TdTool.deleteZero(model?.YearRate?:0)}">10</span><span class="rel g-orange2 f18" th:if="${model?.TuandaiRedRate?:0 ge 0}" th:text="'+'+${#TdTool.deleteZero(model.TuandaiRedRate)}">+1</span><span class="g-orange2 rel f14">%</span>
+	                                   <span class="g9 f12 showtips-box"> 预期年化利率
+	                                        <!-- 年化利率风险提示-->
+	                                        <span class="lv-we-showtips-box left-75">
+	                                            <span class="lv-we-showtips lv-showtips-prom" style="display: none;">
+													本平台所有项目预期年化利率是在参考同类型项目历史数据得出，并不代表实际收益，市场有风险，投资需谨慎。
+	                                                <i class="lv-arrow-tip"  ></i>
+	                                            </span>
+	                                        </span>
+	                                        <!-- 年化利率风险提示-->
+	                                     </span></div>
+									<span class="g9 ml5 f12" th:inline="text">起投金额：[[${#numbers.formatDecimal(model?.UnitAmount, 1, 'COMMA', 0, 'POINT')}]]元</span>
+								</div>
+								<div class="date i-b-d ">
+									<div class="mb10  mb15"><span class=" f26 g6 rel t2" th:text="${model.Deadline}"></span> <span class="g9 f12">个月 </span><span class="g9 f12" th:text="'/'+${model?.Deadline ge 6?'每月付息':(model?.Deadline ge 1 ?'到期本息':'每月付息/到期本息')}">/每月付息</span></div>
+									<span class="g9 db f12" th:inline="text">剩余金额：[[${#numbers.formatDecimal((model?.TotalQty - model?.OrderQty)*model?.UnitAmount, 1, 'COMMA', 0, 'POINT')}]]元</span></div>
+								<div class="submit i-b-d">
+	                                <a th:if="${model?.Status eq 1}" th:href="@{'/pages/weplan/WeAYB_Detail.aspx'(id=${model?.ProductId})}" target="_blank" class="join td-btn-1   td-btn-1-or jiek_action" th:attr="attrid=${model.ProductId},protitle=${model?.ProductName}" style="font-size: 12px!important;">
+	                                    <span class="timeSet" style="font-size: 12px; color: #fff;" th:attr="count=${model?.diffNow ge 0?model?.diffNow :'0%'}">00时00分00秒</span>
+	                                </a>
+	                                <a th:if="${model?.Status eq 2}" class="join td-btn-1   td-btn-1-or jiek_action" id="btnSubscribe" th:href="@{'/pages/weplan/WeAYB_Detail.aspx'(id=${model?.ProductId})}" target="_blank" onclick="return aJump();">马上加入</a>
+									<a th:if="${model?.Status eq 3}" class="join td-btn-1   td-btn-1-gar jiek_action" id="btnSubscribe" th:href="@{'/pages/weplan/WeAYB_Detail.aspx'(id=${model?.ProductId})}" target="_blank">已结束</a>
+									<a th:if="${model?.Status eq 0}" class="join td-btn-1   td-btn-1-gar jiek_action" id="btnSubscribe" th:href="@{'/pages/weplan/WeAYB_Detail.aspx'(id=${model?.ProductId})}" target="_blank">已满额</a>
+								</div>
+							</div>
+						</div>
+	                    <a th:href="@{'/pages/weplan/WeAYB_Detail.aspx'(id=${model?.ProductId})}" id="aJump" onclick="return  aJump();"  target="_blank" style="display: none"><span th:id="${model?.ProductId}"></span></a>
+					</li> 
+					 <li th:if="${modelStat.count eq 1 and modelStat.size % 2 ne 0}">
+	                 	<a th:href="${Globals.activityWebsiteUrl}+'/web/20161108/index.aspx'" target="_blank" class="show-win">
+							<img src="//js.tuandai.com/images/invent_detail/AnYing/ayb_list.png?v=20170321" alt="" style="margin-top: -4px !important;"/>
+						</a>
+	                 </li>
+	            </th:block>
+			</ul>
+		</div>
+		
+		<!--计算收益-->
+		<div class="item pb30">
+			<div class="content cl fix">
+				<h2>投资计算器-安盈计划</h2>
+				<div class="l mt20">
+					<p class="f14">产品类型：</p>
+					<ul class="progess-list" id="wrap">
+						<li th:each="model:${expectList}">
+							<span class="term" th:inline="text">[[${model?.ProductName}]]</span>
+							<div class="progess-wrap"><span class="progess pro" th:style="'width:'+${(model?.InterestAmount/maxInterest)*100 }+'%'"></span></div>
+							<span class="profit" th:attr="deadline=${model?.Deadline},yearrate=${model?.YearRate}" ><span class="profitprog" th:id="'prg'+${model.TypeWord}" th:text="${#numbers.formatDecimal(model?.InterestAmount,1,'COMMA',2,'POINT')}">10000</span> 元</span>
+						</li> 
+					</ul>
+				</div>
+				<div class=" r mt20">
+					<p class="f14">投资金额：</p>
+					<div class="input-box mt30" id="dvPreAmount">
+						<input type="text" value="10000" id="txtPreAmount" maxlength="9" />元
+					</div>
+                    <label class="ui-term-error error" id="preAmount_error" style="display:none;margin-top:10px;" for="txtPreAmount">投资金额范围须为1000的整数倍且不能为空</label>
+					<div class="submit  mt40" style="margin-top:20px!important;"> 
+						<a class="td-btn-1 auto td-btn-1-or count-btn" id="btnCount" href="javascript:void(0)">开始计算</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<!--智能理财效果-->
+		<div class="item financial-effect pb20">
+			<div class="content cl fix effect">
+				<h2 class="mb20">安盈计划效果</h2>
+				<dl class="  ">
+					<dt class="p1 re_invent_icon"></dt>
+					<dd>
+						<p>累计加入金额</p> 
+                        <p th:inline="text"><span class="f22 g-orange2" th:text="${staticModel?.TotalAmount gt 10000?(staticModel?.TotalAmount/10000):staticModel?.TotalAmount}">10000</span>[[${staticModel?.TotalAmount gt 10000?'万':''}]]元</p>
+					</dd>
+				</dl>
+				<dl class="   ">
+					<dt class="p2 re_invent_icon"></dt>
+					<dd>
+						<p>加入总人次</p>
+						<p th:inline="text"><span class="f22 g-orange2" th:text="${staticModel?.OrderQty gt 10000?(staticModel?.OrderQty/10000):staticModel?.OrderQty}">2000</span>[[${staticModel?.OrderQty gt 10000?'万':''}]]次</p> 
+					</dd>
+				</dl>
+				<dl class="  ">
+					<dt class="p3 re_invent_icon"></dt>
+					<dd>
+						<p>投标次数</p>
+						<p th:inline="text"><span class="f22 g-orange2 " th:text="${staticModel?.InvestCount gt 10000?(staticModel?.InvestCount/10000):staticModel?.InvestCount}">10000</span>[[${staticModel?.InvestCount gt 10000?'万':''}]]次</p>  
+					</dd>
+				</dl>
+				<dl class="w253">
+					<dt class="p4 re_invent_icon"></dt>
+					<dd>
+						<p>为用户赚取收益</p>
+						<p th:inline="text"><span class="f22 g-orange2" th:text="${staticModel?.EarnInterestAmount gt 10000?#numbers.formatDecimal(staticModel?.EarnInterestAmount/10000,1,'COMMA',2,'POINT'):#numbers.formatDecimal(staticModel?.EarnInterestAmount,1,'COMMA',2,'POINT')}">10000</span>[[${staticModel?.EarnInterestAmount gt 10000?'万':''}]]元</p>
+					</dd>
+				</dl> 
+			</div>
+		</div>
+		
+		<!--往期记录-->
+		<div class="item">
+			<div class="content">
+				<h2 class="rel">往期安盈计划  
+					<dl class="screen" >
+						<dt datatype="0" id="viewWeAll">全部往期<i class="re_invent_icon re-invent-list-arrow"></i></dt>
+                          <dd datatype="0">全部往期</dd>
+						     <dd th:each="model:${typeList}" th:attr="datatype=${model.Id}" th:text="'安盈计划'+${model.TypeWord}">安盈计划6期</dd>
+					</dl>
+				</h2>
+                 <div id="welist" class="we-list-data-bd" name="a"> 
+                     <table width="100%" class="past" id="tblist"> 
+				     </table>
+                </div> 
+			</div>
+
+			 <div id="divPagination" class="divPaginationJing" style="margin-bottom: 15px;">
+             </div>
+		</div>
+	</div>
+</th:block>
+
+<th:block layout:fragment="secondFooter">
+    <script type="text/javascript" src="//js.tuandai.com/scripts/jquery.pagination/jquery.pagination.js"></script>
+	<script src="//js.tuandai.com/scripts/investlist/re_invent_list/countUp.min.js?v=20170221001" type="text/javascript" charset="utf-8"></script>
+    <script src="//js.tuandai.com/v1/scripts/RegularFinancial/pages/weplan/WeAYB_List.js?v=20170221001" type="text/javascript" charset="utf-8"></script>
+	<script th:inline="javascript">
+		/*<![CDATA[*/
+		//加入之前判断存管通
+		var IsOpenCGT = /*[[${Globals.isOpenCGT}]]*/;
+		function aJump() {
+			try {
+				if (IsOpenCGT && !checkIsOpen())
+					return false;
+			} catch (e) {
+			}
+	
+			return true;
+		};
+		/*]]>*/
+	</script>
+</th:block>
+ </body>
+</html>
